@@ -1,0 +1,87 @@
+#--------------------------------------------------
+# There are 1 DAGs in the session
+#--------------------------------------------------
+#--------------------------------------------------
+# TEZ DAG plan: scope-109
+#--------------------------------------------------
+Tez vertex scope-102	->	Tez vertex scope-104,
+Tez vertex scope-103	->	Tez vertex scope-104,
+Tez vertex scope-104	->	Tez vertex scope-108,
+Tez vertex scope-108
+
+Tez vertex scope-102
+# Plan on vertex
+POValueOutputTez - scope-106	->	 [scope-104]
+|
+|---a: New For Each(false,false)[bag] - scope-80
+    |   |
+    |   Cast[int] - scope-75
+    |   |
+    |   |---Project[bytearray][0] - scope-74
+    |   |
+    |   Cast[int] - scope-78
+    |   |
+    |   |---Project[bytearray][1] - scope-77
+    |
+    |---a: Load(file:///tmp/input:org.apache.pig.builtin.PigStorage) - scope-73
+Tez vertex scope-103
+# Plan on vertex
+POValueOutputTez - scope-107	->	 [scope-104]
+|
+|---c: New For Each(false,false)[bag] - scope-88
+    |   |
+    |   Cast[int] - scope-83
+    |   |
+    |   |---Project[bytearray][1] - scope-82
+    |   |
+    |   Cast[int] - scope-86
+    |   |
+    |   |---Project[bytearray][0] - scope-85
+    |
+    |---b: Load(file:///tmp/input:org.apache.pig.builtin.PigStorage) - scope-81
+Tez vertex scope-104
+# Plan on vertex
+d: Local Rearrange[tuple]{int}(false) - scope-122	->	 scope-108
+|   |
+|   Project[int][0] - scope-124
+|
+|---e: New For Each(false,false)[bag] - scope-110
+    |   |
+    |   Project[int][0] - scope-111
+    |   |
+    |   POUserFunc(org.apache.pig.builtin.AlgebraicMathBase$Initial)[tuple] - scope-112
+    |   |
+    |   |---Project[bag][1] - scope-113
+    |       |
+    |       |---Project[bag][1] - scope-114
+    |
+    |---Pre Combiner Local Rearrange[tuple]{Unknown} - scope-125
+        |
+        |---POShuffledValueInputTez - scope-105	<-	 [scope-102, scope-103]
+Tez vertex scope-108
+# Combine plan on edge <scope-104>
+d: Local Rearrange[tuple]{int}(false) - scope-126	->	 scope-108
+|   |
+|   Project[int][0] - scope-128
+|
+|---e: New For Each(false,false)[bag] - scope-115
+    |   |
+    |   Project[int][0] - scope-116
+    |   |
+    |   POUserFunc(org.apache.pig.builtin.LongSum$Intermediate)[tuple] - scope-117
+    |   |
+    |   |---Project[bag][1] - scope-118
+    |
+    |---d: Package(CombinerPackager)[tuple]{int} - scope-121
+# Plan on vertex
+e: Store(file:///tmp/output:org.apache.pig.builtin.PigStorage) - scope-101
+|
+|---e: New For Each(false,false)[bag] - scope-100
+    |   |
+    |   Project[int][0] - scope-94
+    |   |
+    |   POUserFunc(org.apache.pig.builtin.LongSum$Final)[long] - scope-98
+    |   |
+    |   |---Project[bag][1] - scope-119
+    |
+    |---d: Package(CombinerPackager)[tuple]{int} - scope-91
